@@ -1,0 +1,146 @@
+###############################################################################
+#                     CODE QUEST API — Manual Tests (REST Client)
+#
+#  Compatível com: VS Code REST Client, PhpStorm HTTP Client, Insomnia.
+#  Antes de usar, suba o servidor local:  php artisan serve
+###############################################################################
+
+### ── Variáveis Globais ─────────────────────────────────────────────────────
+@baseUrl = http://localhost:8000/api
+@authToken = 1|nQ4OZcgkhjAE8MGFHOv8wFrFQWZ9Ym90iqjrGCVZf6afc910
+
+
+###############################################################################
+#  1. REGISTRO DE USUÁRIO
+#     Cria uma nova conta no sistema.
+###############################################################################
+
+### Registro
+POST {{baseUrl}}/auth/register
+Content-Type: application/json
+
+{
+    "name": "João Silva",
+    "email": "joao@codequest.dev",
+    "password": "Senh@Segura123",
+    "password_confirmation": "Senh@Segura123"
+}
+
+
+###############################################################################
+#  2. LOGIN
+#     Autentica o usuário e retorna o token Bearer.
+#     ➜ Copie o token da resposta e atualize @authToken acima.
+###############################################################################
+
+### Login
+POST {{baseUrl}}/auth/login
+Content-Type: application/json
+
+{
+    "email": "joao@codequest.dev",
+    "password": "Senh@Segura123"
+}
+
+
+###############################################################################
+#  3. VISUALIZAR PERFIL
+#     Retorna os dados do usuário autenticado.
+###############################################################################
+
+### Visualizar Perfil
+GET {{baseUrl}}/user/profile
+Accept: application/json
+Authorization: Bearer {{authToken}}
+
+
+###############################################################################
+#  4. ATUALIZAR PERFIL
+#     Atualiza a stack de interesse do usuário.
+###############################################################################
+
+### Atualizar Perfil — Adicionar Stack de Interesse
+PUT {{baseUrl}}/user/profile
+Content-Type: application/json
+Accept: application/json
+Authorization: Bearer {{authToken}}
+
+{
+    "stack_interesse": ["Angular", "Java"]
+}
+
+
+###############################################################################
+#  5. LISTAR QUESTÕES DE NIVELAMENTO
+#     Retorna as 5 perguntas fixas do banco de dados (sem correct_answer).
+#     ➜ Execute primeiro: php artisan db:seed --class=AssessmentSeeder
+###############################################################################
+
+### Listar Questões de Nivelamento
+GET {{baseUrl}}/assessment/questions
+Accept: application/json
+Authorization: Bearer {{authToken}}
+
+
+###############################################################################
+#  6. SUBMETER RESPOSTAS DO NIVELAMENTO
+#     Envia as respostas, calcula pontuação e gera trilha via IA (P02).
+#     ➜ Ajuste os question_id conforme o retorno do GET acima.
+###############################################################################
+
+### Submeter Respostas do Nivelamento
+POST {{baseUrl}}/assessment/submit
+Content-Type: application/json
+Accept: application/json
+Authorization: Bearer {{authToken}}
+
+{
+    "answers": [
+        { "question_id": 1, "answer": "B" },
+        { "question_id": 2, "answer": "B" },
+        { "question_id": 3, "answer": "C" },
+        { "question_id": 4, "answer": "D" },
+        { "question_id": 5, "answer": "B" }
+    ]
+}
+
+
+###############################################################################
+#  7. TUTOR IA - LISTAR HISTÓRICO DE MENSAGENS
+#     Retorna todo o chat histórico do usuário autenticado cronologicamente.
+###############################################################################
+
+### Listar Histórico do Chat com o Tutor
+GET {{baseUrl}}/tutor/chat
+Accept: application/json
+Authorization: Bearer {{authToken}}
+
+
+###############################################################################
+#  8. TUTOR IA - ENVIAR MENSAGEM
+#     Envia uma dúvida pedagógica para o Tutor IA Tech.
+#     Opcionalmente associa a um node do roadmap (roadmap_node_id).
+###############################################################################
+
+### Enviar Mensagem para o Tutor
+POST {{baseUrl}}/tutor/message
+Content-Type: application/json
+Accept: application/json
+Authorization: Bearer {{authToken}}
+
+{
+    "message": "Como funciona o método de inserção de dados em uma árvore binária de busca?",
+    "roadmap_node_id": 12
+}
+
+
+###############################################################################
+#  9. RANKING GLOBAL SEMANAL
+#     Retorna o Top 20 de usuários por XP ganho na semana atual (seg-dom).
+#     Os dados vêm da tabela xp_logs com filtro por data.
+###############################################################################
+
+### Ranking Global (Leaderboard Semanal)
+GET {{baseUrl}}/ranking/global
+Accept: application/json
+Authorization: Bearer {{authToken}}

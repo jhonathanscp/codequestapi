@@ -35,4 +35,36 @@ return [
         ],
     ],
 
+    /*
+    |--------------------------------------------------------------------------
+    | AI / LLM Providers
+    |--------------------------------------------------------------------------
+    |
+    | Configuração dos provedores de IA utilizados pelo AiOrchestratorService.
+    | O driver ativo é definido pela variável AI_PROVIDER.
+    |
+    */
+
+    'ai' => [
+        'provider' => env('AI_PROVIDER', 'gemini'),
+    ],
+
+    'gemini' => [
+        'key' => env('GEMINI_API_KEY'),
+        'model' => env('AI_MODEL', 'gemini-2.0-flash'),
+        'url' => 'https://generativelanguage.googleapis.com/v1beta/models',
+    ],
+
+    'openai' => [
+        'key' => env('OPENAI_API_KEY'),
+        'model' => env('AI_MODEL', 'gpt-4o-mini'),
+        'url' => 'https://api.openai.com/v1/chat/completions',
+    ],
+
+    'deepseek' => [
+        'key' => env('DEEPSEEK_API_KEY'),
+        'model' => env('AI_MODEL', 'deepseek-chat'),
+        'url' => 'https://api.deepseek.com/v1/chat/completions',
+    ],
+
 ];
